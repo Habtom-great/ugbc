@@ -1,0 +1,24 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment & config
+.env
+db.php
+config.php
+
+# Logs
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Microsoft Office temporary files
+~$*
+
+# Documents & large files
+*.doc
+*.docx
+*.pdf
+*.mp4

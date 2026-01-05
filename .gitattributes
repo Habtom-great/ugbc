@@ -3,3 +3,16 @@
 *.html text eol=lf
 *.css text eol=lf
 *.js text eol=lf
+~$*
+*.doc
+*.docx
+*.pdf
+*.mp4
+# Microsoft Office temporary files
+~$*
+
+# Office documents (optional – recommended)
+*.doc
+*.docx
+*.pdf
+*.mp4
