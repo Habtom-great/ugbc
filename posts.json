@@ -1,0 +1,19 @@
+[
+                {
+                    "id": 1,
+                    "title": "Faith in Times of Uncertainty",
+                    "content": "In these trying times, it is important to lean on God...",
+                    "date": "2024-10-03",
+                    "author": "Pastor John",
+                    "image": "images/blog1.jpg"
+                },
+                {
+                    "id": 2,
+                    "title": "How to Strengthen Your Faith",
+                    "content": "Building a stronger relationship with God begins with daily prayer and reflection...",
+                    "date": "2024-09-20",
+                    "author": "Pastor Sarah",
+                    "image": "images/blog2.jpg"
+                }
+            ]
+            

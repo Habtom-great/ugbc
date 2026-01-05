@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members Database Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 1200px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .left,
+        .right {
+            width: 48%;
+        }
+
+        h1, h2 {
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        form input[type="text"], form input[type="number"], form select {
+            margin-bottom: 10px;
+        }
+
+        form button {
+            width: 100%;
+            padding: 8px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .student-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .name-row,
+        .tel-country-row,
+        .age-sex-row,
+        .city-whatsup-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .name-row input,
+        .tel-country-row input,
+        .age-sex-row input,
+        .age-sex-row select,
+        .city-whatsup-row input {
+            flex: 1;
+        }
+
+        .tel-country-row select {
+            flex: 1;
+        }
+
+        .city-whatsup-row #city {
+            flex: 2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left">
+            <h1>Members Registration</h1>
+            <form id="record-form">
+                <div class="name-row">
+                    <input type="text" id="firstName" placeholder="First Name" required>
+                    <input type="text" id="middleName" placeholder="Middle Name">
+                    <input type="text" id="lastName" placeholder="Last Name" required>
+                </div>
+                <div class="age-sex-row">
+                    <input type="number" id="age" placeholder="Age" required>
+                    <select id="sex" required>
+                        <option value="" disabled selected>Sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <input type="text" id="address" placeholder="Address" required>
+                <div class="tel-country-row">
+                    <input type="tel" id="telNo" placeholder="Tel. No." required>
+                    <select id="country" required>
+                        <option value="" disabled selected>Select Country</option>
+                        <option value="Ethiopia" data-code="+251">Ethiopia (+251)</option>
+                        <option value="United States" data-code="+1">United States (+1)</option>
+                        <option value="India" data-code="+91">India (+91)</option>
+                        <option value="United Kingdom" data-code="+44">United Kingdom (+44)</option>
+                    </select>
+                </div>
+                <div class="city-whatsup-row">
+                    <input type="text" id="city" placeholder="City" required>
+                    <input type="tel" id="whatsUp" placeholder="WhatsApp No." required>
+                </div>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="file" id="image" accept="image/*">
+                <button type="submit">Add Record</button>
+                <input type="hidden" id="edit-index" value="-1">
+            </form>
+        </div>
+
+        <div class="right">
+            <h2>Records</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reg. No.</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Sex</th>
+                        <th>Address</th>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th>Tel. No.</th>
+                        <th>WhatsApp</th>
+                        <th>Email</th>
+                        <th>Image</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="record-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('record-form');
+        const recordList = document.getElementById('record-list');
+        let records = [];
+        let registrationNo = 1;
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const editIndex = document.getElementById('edit-index').value;
+            const name = `${document.getElementById('firstName').value.trim()} ${document.getElementById('middleName').value.trim()} ${document.getElementById('lastName').value.trim()}`;
+            const age = document.getElementById('age').value;
+            const sex = document.getElementById('sex').value;
+            const address = document.getElementById('address').value;
+            const country = document.getElementById('country').value;
+            const city = document.getElementById('city').value;
+            const telNo = document.getElementById('telNo').value;
+            const whatsUp = document.getElementById('whatsUp').value;
+            const email = document.getElementById('email').value;
+            let imageUrl;
+
+            if (document.getElementById('image').files.length > 0) {
+                imageUrl = URL.createObjectURL(document.getElementById('image').files[0]);
+            }
+
+            const record = { registrationNo, name, age, sex, address, country, city, telNo, whatsUp, email, imageUrl };
+
+            if (editIndex === "-1") {
+                record.registrationNo = registrationNo++;
+                records.push(record);
+            } else {
+                records[editIndex] = { ...record, registrationNo: records[editIndex].registrationNo, imageUrl: imageUrl || records[editIndex].imageUrl };
+            }
+
+            renderRecords();
+            form.reset();
+            document.getElementById('edit-index').value = "-1";
+        });
+
+        function renderRecords() {
+            recordList.innerHTML = '';
+            records.forEach((record, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.registrationNo}</td>
+                    <td>${record.name}</td>
+                    <td>${record.age}</td>
+                    <td>${record.sex}</td>
+                    <td>${record.address}</td>
+                    <td>${record.country}</td>
+                    <td>${record.city}</td>
+                    <td>${record.telNo}</td>
+                    <td>${record.whatsUp}</td>
+                    <td>${record.email}</td>
+                    <td><img src="${record.imageUrl}" alt="Student Image" class="student-img"></td>
+                    <td><button onclick="editRecord(${index})">Edit</button></td>
+                    <td><button onclick="deleteRecord(${index})">Delete</button></td>
+                `;
+                recordList.appendChild(row);
+            });
+        }
+
+        function editRecord(index) {
+            const record = records[index];
+            const [firstName, middleName, lastName] = record.name.split(' ');
+            document.getElementById('firstName').value = firstName || '';
+            document.getElementById('middleName').value = middleName || '';
+            document.getElementById('lastName').value = lastName || '';
+            document.getElementById('age').value = record.age;
+            document.getElementById('sex').value = record.sex;
+            document.getElementById('address').value = record.address;
+            document.getElementById('country').value = record.country;
+            document.getElementById('city').value = record.city;
+            document.getElementById('telNo').value = record.telNo;
+            document.getElementById('whatsUp').value = record.whatsUp;
+            document.getElementById('email').value = record.email;
+            document.getElementById('edit-index').value = index;
+        }
+
+        function deleteRecord(index) {
+            records.splice(index, 1);
+            renderRecords();
+        }
+    </script>
+</body>
+
+</html>
